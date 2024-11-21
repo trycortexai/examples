@@ -38,7 +38,7 @@ const FieldsExtraction = () => {
       }
 
       setResult({
-        json: JSON.stringify(data, null, 2),
+        json: data,
       });
     } catch {
       toast.error("Failed to extract fields");
@@ -48,7 +48,7 @@ const FieldsExtraction = () => {
   };
 
   return (
-    <Demo loading={loading} result={result}>
+    <Demo heading="Fields extraction" loading={loading} result={result}>
       <Demo.Left>
         <Demo.LeftContent>
           <Demo.FileUpload onUpload={(files) => setFile(files[0])} />

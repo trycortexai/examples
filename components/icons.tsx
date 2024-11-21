@@ -1,5 +1,11 @@
 import {
+  Check,
+  ChevronDown,
+  ChevronRight,
+  ChevronUp,
   CloudUpload,
+  Copy,
+  File,
   FileStack,
   Image,
   Loader,
@@ -15,6 +21,12 @@ export const Icons = {
   spinner: Loader2,
   throbber: Loader,
   cloudUpload: CloudUpload,
+  chevronDown: ChevronDown,
+  chevronRight: ChevronRight,
+  chevronUp: ChevronUp,
+  copy: Copy,
+  check: Check,
+  file: File,
   cortexIcon: (props: LucideProps) => (
     <svg
       width="72"
