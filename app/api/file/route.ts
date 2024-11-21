@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { Buffer } from "buffer";
 
+export const runtime = "edge";
+
 type UploadedFile = {
   fileName: string;
   fileUrl: string;

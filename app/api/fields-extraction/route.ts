@@ -2,6 +2,8 @@ import { makeCortexApiRequest } from "@/lib/cortex-api";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 
+export const runtime = "edge";
+
 export async function POST(request: NextRequest) {
   const { file, fieldsToExtract } = await request.json();
   try {
