@@ -43,7 +43,7 @@ const DemoLeft = ({ children }: PropsWithChildren) => {
         {
           "w-1/2": showContent,
           "w-full": !showContent,
-        }
+        },
       )}
     >
       {children}
@@ -61,7 +61,7 @@ const DemoRight = ({ children }: PropsWithChildren) => {
         {
           "w-1/2": showContent,
           "w-0": !showContent,
-        }
+        },
       )}
     >
       {children}
