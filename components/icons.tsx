@@ -1,9 +1,20 @@
-import { FileStack, Image, LucideProps, Text } from "lucide-react";
+import {
+  CloudUpload,
+  FileStack,
+  Image,
+  Loader,
+  Loader2,
+  LucideProps,
+  Text,
+} from "lucide-react";
 
 export const Icons = {
   text: Text,
   image: Image,
   classification: FileStack,
+  spinner: Loader2,
+  throbber: Loader,
+  cloudUpload: CloudUpload,
   cortexIcon: (props: LucideProps) => (
     <svg
       width="72"

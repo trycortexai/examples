@@ -2,12 +2,13 @@ import React, {
   PropsWithChildren,
   createContext,
   useContext,
-  useRef,
+  useState,
 } from "react";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import FileDropzone from "./file-dropzone";
+import { Textarea } from "./ui/textarea";
+import { Button, ButtonProps } from "./ui/button";
+import Spinner from "./spinner";
 
 export type DemoResult = {
   json?: string;
@@ -18,11 +19,6 @@ type DemoContextType = {
   loading: boolean;
   result: DemoResult;
 };
-
-type UploadedFile = {
-  fileName: string;
-  fileUrl: string;
-} | null;
 
 const DemoContext = createContext<DemoContextType | undefined>(undefined);
 
@@ -50,10 +46,13 @@ Demo.Left = ({ children }: PropsWithChildren) => {
   const showContent = loading || Boolean(result?.json || result?.markdown);
   return (
     <div
-      className={cn("flex-grow h-screen transition-all duration-500", {
-        "w-1/2": showContent,
-        "w-full": !showContent,
-      })}
+      className={cn(
+        "flex-grow h-screen transition-all duration-500 flex justify-center items-center",
+        {
+          "w-1/2": showContent,
+          "w-full": !showContent,
+        }
+      )}
     >
       {children}
     </div>
@@ -79,23 +78,37 @@ Demo.Right = ({ children }: PropsWithChildren) => {
 };
 
 Demo.LeftContent = ({ children }: PropsWithChildren) => {
-  return <div className="p-8">{children}</div>;
+  return (
+    <div className="p-8 flex flex-col items-center justify-center gap-4 w-[600px]">
+      {children}
+    </div>
+  );
 };
 
 Demo.RightContent = ({ children }: PropsWithChildren) => {
-  return <div className="p-8">{children}</div>;
+  return (
+    <div className="p-8 flex flex-col items-center justify-center gap-4">
+      {children}
+    </div>
+  );
+};
+
+export type FileUploadResult = {
+  fileName: string;
+  fileUrl: string;
 };
 
 interface FileUploadProps {
   multiple?: boolean;
-  onUpload?: (files: { fileName: string; fileUrl: string }[]) => void;
+  onUpload?: (files: FileUploadResult[]) => void;
 }
 
 Demo.FileUpload = ({ multiple = false, onUpload }: FileUploadProps) => {
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleUpload = async (files: File[] | File) => {
     try {
+      setIsUploading(true);
       const formData = new FormData();
       const fileArray = Array.isArray(files) ? files : [files];
       fileArray.forEach((file) => formData.append("files", file));
@@ -115,35 +128,18 @@ Demo.FileUpload = ({ multiple = false, onUpload }: FileUploadProps) => {
       }
     } catch (error) {
       console.error("Error uploading files:", error);
-    }
-  };
-
-  const handleManualUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      handleUpload(files.length === 1 ? files[0] : Array.from(files));
+    } finally {
+      setIsUploading(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-full min-h-[400px] rounded-lg">
-      <div className="w-full max-w-md space-y-6">
-        <FileDropzone onUpload={handleUpload} multiple={multiple} />
-        <Input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleManualUpload}
-          className="hidden"
-          accept=".pdf,.png,.jpg,.jpeg"
-          multiple={multiple}
-        />
-        <Button
-          className="w-full"
-          onClick={() => fileInputRef.current?.click()}
-        >
-          Upload File
-        </Button>
-      </div>
+    <div className="flex flex-col w-full items-center justify-center h-full rounded-lg">
+      <FileDropzone
+        onUpload={handleUpload}
+        multiple={multiple}
+        isUploading={isUploading}
+      />
     </div>
   );
 };
@@ -157,7 +153,8 @@ Demo.Result = () => {
       </div>
       <div className="flex-1 overflow-y-auto p-4">
         {loading ? (
-          <div className="flex items-center justify-center h-full text-muted-foreground">
+          <div className="flex flex-col items-center justify-center h-full gap-2">
+            <Spinner />
             Processing...
           </div>
         ) : result ? (
@@ -177,6 +174,24 @@ Demo.Result = () => {
           </div>
         )}
       </div>
+    </div>
+  );
+};
+
+Demo.Textarea = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof Textarea>) => {
+  return (
+    <Textarea className={cn("min-h-[100px] w-full", className)} {...props} />
+  );
+};
+
+Demo.SubmitButton = (props: ButtonProps) => {
+  const { loading } = useDemoContext();
+  return (
+    <div className="flex justify-end w-full items-center">
+      <Button {...props} disabled={loading} />
     </div>
   );
 };

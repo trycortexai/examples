@@ -1,45 +1,61 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Demo, DemoResult } from "../demo";
+import { useState } from "react";
+import { Demo, DemoResult, FileUploadResult } from "../demo";
+import { toast } from "sonner";
 
 const FieldsExtraction = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<DemoResult>(null);
+  const [file, setFile] = useState<FileUploadResult | null>(null);
+  const [fieldsToExtract, setFieldsToExtract] = useState<string>("");
 
-  useEffect(() => {
-    // Simulate loading after 2 seconds
-    const loadingTimeout = setTimeout(() => {
+  const handleExtractFields = async () => {
+    try {
+      if (!file || !fieldsToExtract) {
+        toast.error("No file or fields to extract");
+        return;
+      }
+
       setLoading(true);
+      setResult(null);
 
-      // Simulate result after 3 more seconds
-      const resultTimeout = setTimeout(() => {
-        setLoading(false);
-        setResult({
-          json: JSON.stringify(
-            {
-              name: "John Doe",
-              email: "john@example.com",
-              phone: "123-456-7890",
-            },
-            null,
-            2
-          ),
-          markdown:
-            "# Extracted Fields\n\n- **Name:** John Doe\n- **Email:** john@example.com\n- **Phone:** 123-456-7890",
-        });
-      }, 3000);
+      const response = await fetch("/api/fields-extraction", {
+        method: "POST",
+        body: JSON.stringify({ file, fieldsToExtract }),
+      });
 
-      return () => clearTimeout(resultTimeout);
-    }, 2000);
+      const data = await response.json();
 
-    return () => clearTimeout(loadingTimeout);
-  }, []);
+      if (data.error) {
+        toast.error(data.error);
+        return;
+      }
+
+      setResult({
+        json: JSON.stringify(data, null, 2),
+      });
+    } catch (error) {
+      toast.error("Failed to extract fields");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Demo loading={loading} result={result}>
       <Demo.Left>
-        <Demo.FileUpload onUpload={(files) => console.log(files)} />
+        <Demo.LeftContent>
+          <Demo.FileUpload onUpload={(files) => setFile(files[0])} />
+          <Demo.Textarea
+            value={fieldsToExtract}
+            placeholder="Enter fields to extract in natural language"
+            onChange={(e) => setFieldsToExtract(e.target.value)}
+          />
+          <Demo.SubmitButton onClick={handleExtractFields}>
+            Extract fields
+          </Demo.SubmitButton>
+        </Demo.LeftContent>
       </Demo.Left>
       <Demo.Right>
         <Demo.Result />
