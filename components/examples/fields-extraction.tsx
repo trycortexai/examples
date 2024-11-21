@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Demo, DemoResult, FileUploadResult } from "../demo";
+import Demo, { DemoResult, FileUploadResult } from "../demo";
 import { toast } from "sonner";
 
 const FieldsExtraction = () => {
