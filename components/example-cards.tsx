@@ -13,11 +13,15 @@ export function ExampleCards() {
   );
 }
 
-export function ExampleCard({ title, href, description }: ExamplePage) {
+export function ExampleCard({ title, href, description, icon }: ExamplePage) {
+  const Icon = icon;
   return (
     <div className="group flex hover:ring-2 transition-all duration-300 hover:ring-offset-2 hover:ring-offset-card flex-col h-full overflow-hidden rounded-lg border bg-card">
       <div className="flex flex-col flex-1 p-6">
-        <h3 className="font-semibold text-xl tracking-tight">{title}</h3>
+        <div className="flex items-center gap-3">
+          <Icon className="size-6 text-muted-foreground" />
+          <h3 className="font-semibold text-xl tracking-tight">{title}</h3>
+        </div>
         <p className="mt-3 text-muted-foreground leading-normal">
           {description}
         </p>
