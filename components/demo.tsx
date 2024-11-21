@@ -22,10 +22,7 @@ type DemoContextType = {
 
 const DemoContext = createContext<DemoContextType | undefined>(undefined);
 
-export const Demo = ({
-  children,
-  ...props
-}: PropsWithChildren<DemoContextType>) => {
+const Demo = ({ children, ...props }: PropsWithChildren<DemoContextType>) => {
   return (
     <DemoContext.Provider value={props}>
       <div className="flex h-screen w-full overflow-hidden">{children}</div>
@@ -41,7 +38,7 @@ const useDemoContext = () => {
   return context;
 };
 
-Demo.Left = ({ children }: PropsWithChildren) => {
+const DemoLeft = ({ children }: PropsWithChildren) => {
   const { loading, result } = useDemoContext();
   const showContent = loading || Boolean(result?.json || result?.markdown);
   return (
@@ -59,7 +56,7 @@ Demo.Left = ({ children }: PropsWithChildren) => {
   );
 };
 
-Demo.Right = ({ children }: PropsWithChildren) => {
+const DemoRight = ({ children }: PropsWithChildren) => {
   const { loading, result } = useDemoContext();
   const showContent = loading || Boolean(result?.json || result?.markdown);
   return (
@@ -77,7 +74,7 @@ Demo.Right = ({ children }: PropsWithChildren) => {
   );
 };
 
-Demo.LeftContent = ({ children }: PropsWithChildren) => {
+const DemoLeftContent = ({ children }: PropsWithChildren) => {
   return (
     <div className="p-8 flex flex-col items-center justify-center gap-4 w-[600px]">
       {children}
@@ -85,7 +82,7 @@ Demo.LeftContent = ({ children }: PropsWithChildren) => {
   );
 };
 
-Demo.RightContent = ({ children }: PropsWithChildren) => {
+const DemoRightContent = ({ children }: PropsWithChildren) => {
   return (
     <div className="p-8 flex flex-col items-center justify-center gap-4">
       {children}
@@ -103,7 +100,7 @@ interface FileUploadProps {
   onUpload?: (files: FileUploadResult[]) => void;
 }
 
-Demo.FileUpload = ({ multiple = false, onUpload }: FileUploadProps) => {
+const DemoFileUpload = ({ multiple = false, onUpload }: FileUploadProps) => {
   const [isUploading, setIsUploading] = useState(false);
 
   const handleUpload = async (files: File[] | File) => {
@@ -144,7 +141,7 @@ Demo.FileUpload = ({ multiple = false, onUpload }: FileUploadProps) => {
   );
 };
 
-Demo.Result = () => {
+const DemoResult = () => {
   const { loading, result } = useDemoContext();
   return (
     <div className="flex flex-col h-full min-h-[400px] rounded-lg">
@@ -178,7 +175,7 @@ Demo.Result = () => {
   );
 };
 
-Demo.Textarea = ({
+const DemoTextarea = ({
   className,
   ...props
 }: React.ComponentProps<typeof Textarea>) => {
@@ -187,7 +184,7 @@ Demo.Textarea = ({
   );
 };
 
-Demo.SubmitButton = (props: ButtonProps) => {
+const DemoSubmitButton = (props: ButtonProps) => {
   const { loading } = useDemoContext();
   return (
     <div className="flex justify-end w-full items-center">
@@ -195,3 +192,14 @@ Demo.SubmitButton = (props: ButtonProps) => {
     </div>
   );
 };
+
+Demo.Left = DemoLeft;
+Demo.Right = DemoRight;
+Demo.LeftContent = DemoLeftContent;
+Demo.RightContent = DemoRightContent;
+Demo.FileUpload = DemoFileUpload;
+Demo.Result = DemoResult;
+Demo.Textarea = DemoTextarea;
+Demo.SubmitButton = DemoSubmitButton;
+
+export default Demo;

@@ -2,7 +2,6 @@ import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { Icons } from "./icons";
 import Spinner from "./spinner";
-import { cn } from "@/lib/utils";
 
 interface FileDropzoneProps {
   onUpload: (files: File[] | File) => void;

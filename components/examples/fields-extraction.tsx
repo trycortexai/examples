@@ -35,7 +35,7 @@ const FieldsExtraction = () => {
       setResult({
         json: JSON.stringify(data, null, 2),
       });
-    } catch (error) {
+    } catch {
       toast.error("Failed to extract fields");
     } finally {
       setLoading(false);
