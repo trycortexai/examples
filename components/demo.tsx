@@ -1,9 +1,4 @@
-import React, {
-  PropsWithChildren,
-  createContext,
-  useContext,
-  useState,
-} from "react";
+import React, { PropsWithChildren, createContext, useContext } from "react";
 import { cn } from "@/lib/utils";
 import FileDropzone from "./file-dropzone";
 import { Textarea } from "./ui/textarea";
@@ -90,53 +85,15 @@ const DemoRightContent = ({ children }: PropsWithChildren) => {
   );
 };
 
-export type FileUploadResult = {
-  fileName: string;
-  fileUrl: string;
-};
-
 interface FileUploadProps {
   multiple?: boolean;
-  onUpload?: (files: FileUploadResult[]) => void;
+  onUpload: (files: File[]) => void;
 }
 
 const DemoFileUpload = ({ multiple = false, onUpload }: FileUploadProps) => {
-  const [isUploading, setIsUploading] = useState(false);
-
-  const handleUpload = async (files: File[] | File) => {
-    try {
-      setIsUploading(true);
-      const formData = new FormData();
-      const fileArray = Array.isArray(files) ? files : [files];
-      fileArray.forEach((file) => formData.append("files", file));
-
-      const response = await fetch("/api/file", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Upload failed");
-      }
-
-      const data = await response.json();
-      if (data.files && onUpload) {
-        onUpload(data.files);
-      }
-    } catch (error) {
-      console.error("Error uploading files:", error);
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
   return (
     <div className="flex flex-col w-full items-center justify-center h-full rounded-lg">
-      <FileDropzone
-        onUpload={handleUpload}
-        multiple={multiple}
-        isUploading={isUploading}
-      />
+      <FileDropzone onUpload={onUpload} multiple={multiple} />
     </div>
   );
 };

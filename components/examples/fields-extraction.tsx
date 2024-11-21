@@ -1,17 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import Demo, { DemoResult, FileUploadResult } from "../demo";
+import Demo, { DemoResult } from "../demo";
 import { toast } from "sonner";
 
 const FieldsExtraction = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<DemoResult>(null);
-  const [file, setFile] = useState<FileUploadResult | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [fieldsToExtract, setFieldsToExtract] = useState<string>("");
 
   const handleExtractFields = async () => {
     try {
+      console.log(file, fieldsToExtract);
       if (!file || !fieldsToExtract) {
         toast.error("No file or fields to extract");
         return;
@@ -20,9 +21,13 @@ const FieldsExtraction = () => {
       setLoading(true);
       setResult(null);
 
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("fieldsToExtract", fieldsToExtract);
+
       const response = await fetch("/api/fields-extraction", {
         method: "POST",
-        body: JSON.stringify({ file, fieldsToExtract }),
+        body: formData,
       });
 
       const data = await response.json();

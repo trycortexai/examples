@@ -35,7 +35,7 @@ export const makeCortexApiRequest = async <T = Record<string, unknown>>({
     throw new Error(
       `Failed to make Cortex API request: ${
         error instanceof Error ? error.message : "Unknown error"
-      }`
+      }`,
     );
   }
 };
