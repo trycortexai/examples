@@ -1,4 +1,5 @@
 import {
+  ArrowLeft,
   Check,
   ChevronDown,
   ChevronRight,
@@ -27,6 +28,7 @@ export const Icons = {
   copy: Copy,
   check: Check,
   file: File,
+  arrowLeft: ArrowLeft,
   cortexIcon: (props: LucideProps) => (
     <svg
       width="72"

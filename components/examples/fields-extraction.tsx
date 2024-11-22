@@ -67,7 +67,7 @@ const FieldsExtraction = () => {
           <Demo.FileUpload onUpload={(files) => setFile(files[0])} />
           <Demo.Textarea
             value={fieldsToExtract}
-            placeholder="Enter fields to extract in natural language"
+            placeholder="Eg: Get employee_id and employee_name"
             onChange={(e) => setFieldsToExtract(e.target.value)}
           />
           <Demo.SubmitButton onClick={handleExtractFields}>

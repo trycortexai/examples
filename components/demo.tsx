@@ -6,6 +6,8 @@ import { Button, ButtonProps } from "./ui/button";
 import Spinner from "./spinner";
 import { JsonViewer } from "./json-viewer";
 import { parse, ALL } from "partial-json";
+import Link from "next/link";
+import { Icons } from "./icons";
 
 export type DemoResult = {
   json?: string;
@@ -46,7 +48,10 @@ const DemoLeft = ({ children }: PropsWithChildren) => {
         "w-full": !showContent,
       })}
     >
-      <div className="h-14 border-b border-border flex items-center px-8">
+      <div className="h-14 border-b border-border flex items-center px-8 gap-2">
+        <Link href="/">
+          <Icons.arrowLeft className="size-5 text-muted-foreground hover:text-foreground transition-colors" />
+        </Link>
         <h1 className="text-lg font-medium">{heading}</h1>
       </div>
       <div className="flex justify-center items-center h-[calc(100vh-3.5rem)]">
@@ -66,7 +71,7 @@ const DemoRight = ({ children }: PropsWithChildren) => {
         {
           "w-1/2": showContent,
           "w-0": !showContent,
-        },
+        }
       )}
     >
       {children}
