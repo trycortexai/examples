@@ -132,7 +132,7 @@ const FileDropzone = ({ onUpload, multiple = false }: FileDropzoneProps) => {
       setFiles(acceptedFiles);
       onUpload(acceptedFiles);
     },
-    [onUpload]
+    [onUpload],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -184,7 +184,7 @@ const FileDropzone = ({ onUpload, multiple = false }: FileDropzoneProps) => {
           const response = await fetch(dummyFile.url);
           const blob = await response.blob();
           return new File([blob], dummyFile.name, { type: dummyFile.type });
-        })
+        }),
       );
 
       setFiles(fetchedFiles);
