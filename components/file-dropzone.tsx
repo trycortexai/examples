@@ -17,6 +17,7 @@ import Spinner from "./spinner";
 interface FileDropzoneProps {
   onUpload: (files: File[]) => void;
   multiple?: boolean;
+  acceptImagesOnly?: boolean;
 }
 
 const DUMMY_FILES = [
@@ -44,6 +45,31 @@ const DUMMY_FILES = [
     name: "Resume.jpg",
     url: "/dummy/resume.jpg",
     type: "image/jpeg",
+  },
+  {
+    name: "Stock Chart.jpg",
+    url: "/dummy/stock-chart.jpg",
+    type: "image/jpeg",
+  },
+  {
+    name: "Investment Portfolio.jpg",
+    url: "/dummy/investment-portfolio.jpg",
+    type: "image/jpeg",
+  },
+  {
+    name: "Financial Dashboard.jpg",
+    url: "/dummy/financial-dashboard.jpg",
+    type: "image/jpeg",
+  },
+  {
+    name: "Market Analysis.jpg",
+    url: "/dummy/market-analysis.jpg",
+    type: "image/jpeg",
+  },
+  {
+    name: "Budget Report.png",
+    url: "/dummy/budget-report.png",
+    type: "image/png",
   },
 ];
 
@@ -95,24 +121,42 @@ const FilePreview = ({
 const DropzoneContent = ({
   isDragActive,
   multiple,
+  acceptImagesOnly,
 }: {
   isDragActive: boolean;
   multiple: boolean;
+  acceptImagesOnly: boolean;
 }) => (
   <div className="space-y-2">
     <div className="h-10 flex items-center justify-center">
-      <Icons.cloudUpload
-        strokeWidth={1.5}
-        className="size-10 text-muted-foreground"
-      />
+      {acceptImagesOnly ? (
+        <Icons.image
+          strokeWidth={1.5}
+          className="size-10 text-muted-foreground"
+        />
+      ) : (
+        <Icons.cloudUpload
+          strokeWidth={1.5}
+          className="size-10 text-muted-foreground"
+        />
+      )}
     </div>
     {isDragActive ? (
-      <p className="text-sm">Drop the files here...</p>
+      <p className="text-sm">
+        Drop the {acceptImagesOnly ? "images" : "files"} here...
+      </p>
     ) : (
       <>
         <p className="text-sm">
-          Drag and drop your {multiple ? "files" : "file"} here, or click to
-          browse
+          Drag and drop your{" "}
+          {multiple
+            ? acceptImagesOnly
+              ? "images"
+              : "files"
+            : acceptImagesOnly
+              ? "image"
+              : "file"}{" "}
+          here, or click to browse
         </p>
         <p className="text-xs text-muted-foreground">Files up to 100MB</p>
       </>
@@ -120,25 +164,33 @@ const DropzoneContent = ({
   </div>
 );
 
-const FileDropzone = ({ onUpload, multiple = false }: FileDropzoneProps) => {
+const FileDropzone = ({
+  onUpload,
+  multiple = false,
+  acceptImagesOnly = false,
+}: FileDropzoneProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [previewFile, setPreviewFile] = useState<File | null>(null);
   const [previewContent, setPreviewContent] = useState<string | null>(null);
   const [isLoadingDummy, setIsLoadingDummy] = useState(false);
-  const [showDummyButton, setShowDummyButton] = useState(true);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       setFiles(acceptedFiles);
       onUpload(acceptedFiles);
     },
-    [onUpload],
+    [onUpload]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple,
     maxSize: 100 * 1024 * 1024, // 100MB
+    accept: acceptImagesOnly
+      ? {
+          "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp"],
+        }
+      : undefined,
   });
 
   const handlePreview = async (file: File) => {
@@ -176,7 +228,11 @@ const FileDropzone = ({ onUpload, multiple = false }: FileDropzoneProps) => {
   const handleUseDummyFiles = async () => {
     setIsLoadingDummy(true);
     try {
-      const shuffled = [...DUMMY_FILES].sort(() => 0.5 - Math.random());
+      const filteredFiles = acceptImagesOnly
+        ? DUMMY_FILES.filter((file) => file.type.startsWith("image/"))
+        : DUMMY_FILES;
+
+      const shuffled = [...filteredFiles].sort(() => 0.5 - Math.random());
       const selectedFiles = shuffled.slice(0, multiple ? 3 : 1);
 
       const fetchedFiles = await Promise.all(
@@ -184,12 +240,11 @@ const FileDropzone = ({ onUpload, multiple = false }: FileDropzoneProps) => {
           const response = await fetch(dummyFile.url);
           const blob = await response.blob();
           return new File([blob], dummyFile.name, { type: dummyFile.type });
-        }),
+        })
       );
 
       setFiles(fetchedFiles);
       onUpload(fetchedFiles);
-      setShowDummyButton(false);
     } catch (error) {
       console.error("Error loading dummy files:", error);
     } finally {
@@ -204,23 +259,32 @@ const FileDropzone = ({ onUpload, multiple = false }: FileDropzoneProps) => {
         className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-foreground transition-colors h-[200px] flex flex-col justify-center w-full"
       >
         <input {...getInputProps()} className="sr-only" />
-        <DropzoneContent isDragActive={isDragActive} multiple={multiple} />
+        <DropzoneContent
+          isDragActive={isDragActive}
+          multiple={multiple}
+          acceptImagesOnly={acceptImagesOnly}
+        />
       </div>
 
-      {showDummyButton && (
-        <div className="flex justify-center">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleUseDummyFiles}
-            type="button"
-            disabled={isLoadingDummy}
-          >
-            {isLoadingDummy && <Spinner />}
-            Or use dummy {multiple ? "files" : "file"}
-          </Button>
-        </div>
-      )}
+      <div className="flex justify-center">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleUseDummyFiles}
+          type="button"
+          disabled={isLoadingDummy}
+        >
+          {isLoadingDummy && <Spinner />}
+          Or use dummy{" "}
+          {multiple
+            ? acceptImagesOnly
+              ? "images"
+              : "files"
+            : acceptImagesOnly
+              ? "image"
+              : "file"}
+        </Button>
+      </div>
 
       {files.length > 0 && (
         <div className="flex flex-wrap gap-2">

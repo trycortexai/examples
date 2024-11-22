@@ -10,16 +10,8 @@ export const EXAMPLE_PAGES = [
   {
     title: "Image Analysis",
     href: "/image-analysis",
-    description:
-      "Analyze and understand image content - detect objects, extract text, and answer questions about images.",
+    description: "Ask questions about an image.",
     icon: Icons.image,
-  },
-  {
-    title: "Document Classification",
-    href: "/document-classification",
-    description:
-      "Automatically categorize and organize documents into predefined categories.",
-    icon: Icons.classification,
   },
 ];
 

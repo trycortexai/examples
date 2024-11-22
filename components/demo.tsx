@@ -71,7 +71,7 @@ const DemoRight = ({ children }: PropsWithChildren) => {
         {
           "w-1/2": showContent,
           "w-0": !showContent,
-        },
+        }
       )}
     >
       {children}
@@ -98,12 +98,21 @@ const DemoRightContent = ({ children }: PropsWithChildren) => {
 interface FileUploadProps {
   multiple?: boolean;
   onUpload: (files: File[]) => void;
+  acceptImagesOnly?: boolean;
 }
 
-const DemoFileUpload = ({ multiple = false, onUpload }: FileUploadProps) => {
+const DemoFileUpload = ({
+  multiple = false,
+  onUpload,
+  acceptImagesOnly = false,
+}: FileUploadProps) => {
   return (
     <div className="flex flex-col w-full items-center justify-center h-full rounded-lg">
-      <FileDropzone onUpload={onUpload} multiple={multiple} />
+      <FileDropzone
+        onUpload={onUpload}
+        multiple={multiple}
+        acceptImagesOnly={acceptImagesOnly}
+      />
     </div>
   );
 };
