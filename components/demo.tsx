@@ -71,7 +71,7 @@ const DemoRight = ({ children }: PropsWithChildren) => {
         {
           "w-1/2": showContent,
           "w-0": !showContent,
-        },
+        }
       )}
     >
       {children}
@@ -124,7 +124,11 @@ const DemoResult = () => {
         ) : result ? (
           <div className="space-y-4">
             {result.json && (
-              <JsonViewer json={parse(result.json, ALL)} maxDepth={Infinity} />
+              <JsonViewer
+                json={parse(result.json, ALL)}
+                maxDepth={Infinity}
+                truncatedByDefault={false}
+              />
             )}
             {result.markdown && (
               <div className="prose prose-sm max-w-none">{result.markdown}</div>
