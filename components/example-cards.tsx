@@ -2,6 +2,7 @@ import { EXAMPLE_PAGES, ExamplePage } from "@/constants/pages";
 import Link from "next/link";
 import { Button, buttonVariants } from "./ui/button";
 import { cn } from "@/lib/utils";
+import { Icons } from "./icons";
 
 export function ExampleCards() {
   return (
@@ -28,6 +29,7 @@ export function ExampleCard({ title, href, description, icon }: ExamplePage) {
       </div>
       <div className="grid grid-cols-2 border-t">
         <Button variant="ghost" className="rounded-none h-12 hover:bg-accent">
+          <Icons.code />
           Code
         </Button>
         <Link href={href} className={cn(buttonVariants(), "rounded-none h-12")}>

@@ -6,11 +6,16 @@ export const EXAMPLE_PAGES = [
     href: "/fields-extraction",
     description: "Extract fields from documents using natural language.",
     icon: Icons.text,
+    code: {
+      workflowSchema: ``,
+      callCode: ``,
+    },
   },
   {
     title: "Image Analysis",
     href: "/image-analysis",
-    description: "Ask questions about an image.",
+    description:
+      "Analyze images and get detailed answers to your questions about them.",
     icon: Icons.image,
   },
 ];

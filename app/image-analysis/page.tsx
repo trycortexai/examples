@@ -4,7 +4,8 @@ export const runtime = "edge";
 
 export const metadata = {
   title: "Image Analysis",
-  description: "Ask questions about an image",
+  description:
+    "Analyze images and get detailed answers to your questions about them",
 };
 
 export default function ImageAnalysisPage() {

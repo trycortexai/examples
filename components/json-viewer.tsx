@@ -51,7 +51,7 @@ export const JsonViewer = memo(
     maxDepth,
   }: JsonViewerProps) => {
     const [expandedPaths, setExpandedPaths] = useState<Map<string, boolean>>(
-      new Map([["root", true]]),
+      new Map([["root", true]])
     );
     const containerRef = useRef<HTMLDivElement>(null);
     const { theme } = useTheme();
@@ -61,15 +61,15 @@ export const JsonViewer = memo(
       (path: string) =>
         expandedPaths.get(path) ??
         (maxDepth ? path.split(".").length <= maxDepth : false),
-      [expandedPaths, maxDepth],
+      [expandedPaths, maxDepth]
     );
 
     const toggleExpand = useCallback(
       (path: string) =>
         setExpandedPaths((prev) =>
-          new Map(prev).set(path, !shouldExpand(path)),
+          new Map(prev).set(path, !shouldExpand(path))
         ),
-      [shouldExpand],
+      [shouldExpand]
     );
 
     useEffect(() => {
@@ -81,7 +81,7 @@ export const JsonViewer = memo(
 
       const handlePointerMove = (event: PointerEvent) => {
         const target = (event.target as HTMLElement).closest(
-          ".item",
+          ".item"
         ) as HTMLElement | null;
         if (target) {
           activeItems.add(target);
@@ -101,7 +101,7 @@ export const JsonViewer = memo(
       const handlePointerLeave = () => {
         activeItems.forEach((item) => {
           const el = item.querySelector(
-            "& > span > span > span[data-actions]",
+            "& > span > span > span[data-actions]"
           ) as HTMLElement | null;
           if (el) el.style.display = "none";
         });
@@ -127,7 +127,7 @@ export const JsonViewer = memo(
         }}
         className={cn(
           "w-full overflow-hidden rounded-sm border p-2 font-mono text-sm leading-[17px]",
-          className,
+          className
         )}
       >
         <JsonValue
@@ -140,7 +140,7 @@ export const JsonViewer = memo(
         />
       </div>
     );
-  },
+  }
 );
 
 JsonViewer.displayName = "JsonViewer";
@@ -187,7 +187,7 @@ const JsonValue = memo(
           toggleExpand(path);
         }
       },
-      [path, toggleExpand, isObjectValue],
+      [path, toggleExpand, isObjectValue]
     );
 
     const handleCopy = useCallback(async (event: React.MouseEvent) => {
@@ -196,7 +196,7 @@ const JsonValue = memo(
       await navigator.clipboard.writeText(
         typeof valueRef.current === "string"
           ? valueRef.current
-          : JSON.stringify(valueRef.current, null, 2),
+          : JSON.stringify(valueRef.current, null, 2)
       );
       setShowCopyCheck(true);
 
@@ -375,10 +375,10 @@ const JsonValue = memo(
                     const start = i * ARRAY_GROUP_SIZE;
                     const end = Math.min(
                       start + ARRAY_GROUP_SIZE - 1,
-                      value.length - 1,
+                      value.length - 1
                     );
                     return renderArrayGroup(start, end);
-                  },
+                  }
                 )
               : Object.entries(value).map(([k, v]) => (
                   <JsonValue
@@ -400,7 +400,7 @@ const JsonValue = memo(
         )}
       </div>
     );
-  },
+  }
 );
 
 JsonValue.displayName = "JsonValue";
