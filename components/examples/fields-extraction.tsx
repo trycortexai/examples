@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Demo, { DemoResult } from "../demo";
 import { toast } from "sonner";
+import { streamResponse } from "@/utils/stream";
 
 const FieldsExtraction = () => {
   const [loading, setLoading] = useState(false);
@@ -12,7 +13,6 @@ const FieldsExtraction = () => {
 
   const handleExtractFields = async () => {
     try {
-      console.log(file, fieldsToExtract);
       if (!file || !fieldsToExtract) {
         toast.error("No file or fields to extract");
         return;
@@ -30,25 +30,38 @@ const FieldsExtraction = () => {
         body: formData,
       });
 
-      const data = await response.json();
-
-      if (data.error) {
-        toast.error(data.error);
-        return;
-      }
-
-      setResult({
-        json: data,
+      await streamResponse<{
+        key: string;
+        output: { message: string };
+      }>({
+        response,
+        onData: (data) => {
+          if (data.key === "MODEL_EXTRACT" && data.output.message) {
+            setResult((prev) => ({
+              json: (prev?.json || "") + data.output.message,
+            }));
+          }
+        },
+        onError: (error) => {
+          toast.error(error.message);
+          setLoading(false);
+        },
+        onComplete: () => {
+          setLoading(false);
+        },
       });
     } catch {
       toast.error("Failed to extract fields");
-    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Demo heading="Fields extraction" loading={loading} result={result}>
+    <Demo
+      heading="Fields extraction"
+      loading={loading && !result}
+      result={result}
+    >
       <Demo.Left>
         <Demo.LeftContent>
           <Demo.FileUpload onUpload={(files) => setFile(files[0])} />

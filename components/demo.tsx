@@ -5,9 +5,10 @@ import { Textarea } from "./ui/textarea";
 import { Button, ButtonProps } from "./ui/button";
 import Spinner from "./spinner";
 import { JsonViewer } from "./json-viewer";
+import { parse, ALL } from "partial-json";
 
 export type DemoResult = {
-  json?: Record<string, unknown>;
+  json?: string;
   markdown?: string;
 } | null;
 
@@ -118,7 +119,7 @@ const DemoResult = () => {
         ) : result ? (
           <div className="space-y-4">
             {result.json && (
-              <JsonViewer json={result.json} maxDepth={Infinity} />
+              <JsonViewer json={parse(result.json, ALL)} maxDepth={Infinity} />
             )}
             {result.markdown && (
               <div className="prose prose-sm max-w-none">{result.markdown}</div>

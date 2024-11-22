@@ -27,7 +27,7 @@ const FileDropzone = ({ onUpload, multiple = false }: FileDropzoneProps) => {
       setFiles(acceptedFiles);
       onUpload(acceptedFiles);
     },
-    [onUpload]
+    [onUpload],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
