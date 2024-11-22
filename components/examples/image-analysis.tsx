@@ -11,7 +11,7 @@ const ImageAnalysis = () => {
   const [image, setImage] = useState<File | null>(null);
   const [question, setQuestion] = useState<string>("");
 
-  const handleExtractFields = async () => {
+  const handleAnalyzeImage = async () => {
     try {
       if (!image || !question) {
         toast.error("No image or question");
@@ -69,7 +69,7 @@ const ImageAnalysis = () => {
             placeholder="Eg: What is the name of the person in the image?"
             onChange={(e) => setQuestion(e.target.value)}
           />
-          <Demo.SubmitButton onClick={handleExtractFields}>
+          <Demo.SubmitButton onClick={handleAnalyzeImage}>
             Analyze image
           </Demo.SubmitButton>
         </Demo.LeftContent>

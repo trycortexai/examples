@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, createContext, useContext } from "react";
+import { PropsWithChildren, createContext, useContext } from "react";
 import { cn } from "@/lib/utils";
 import FileDropzone from "./file-dropzone";
 import { Textarea } from "./ui/textarea";
@@ -8,6 +8,7 @@ import { JsonViewer } from "./json-viewer";
 import { parse, ALL } from "partial-json";
 import Link from "next/link";
 import { Icons } from "./icons";
+import Markdown from "react-markdown";
 
 export type DemoResult = {
   json?: string;
@@ -140,7 +141,9 @@ const DemoResult = () => {
               />
             )}
             {result.markdown && (
-              <div className="prose prose-sm max-w-none">{result.markdown}</div>
+              <Markdown className="prose prose-sm max-w-none" skipHtml>
+                {result.markdown}
+              </Markdown>
             )}
           </div>
         ) : (
