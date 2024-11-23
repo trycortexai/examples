@@ -11,7 +11,7 @@ import { Icons } from "./icons";
 import Markdown from "react-markdown";
 
 export type DemoResult = {
-  json?: string;
+  json?: string | Record<string, unknown>;
   markdown?: string;
 } | null;
 
@@ -135,7 +135,11 @@ const DemoResult = () => {
           <div className="space-y-4">
             {result.json && (
               <JsonViewer
-                json={parse(result.json, ALL)}
+                json={
+                  typeof result.json === "string"
+                    ? parse(result.json, ALL)
+                    : result.json
+                }
                 maxDepth={Infinity}
                 truncatedByDefault={false}
               />

@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { makeCortexApiRequest } from "@/lib/cortex-api";
 import { fileToBase64 } from "@/utils/file";
 
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
     const fileUrl = await fileToBase64(file as File);
 
-    const stream = await makeCortexApiRequest({
+    const run = await makeCortexApiRequest({
       endpoint: `/workflows/${process.env.FIELDS_EXTRACTION_WORKFLOW_ID}/runs`,
       method: "POST",
       body: {
@@ -21,16 +21,11 @@ export async function POST(req: NextRequest) {
           document: fileUrl,
         },
         workflow_version_id: "draft",
-        stream: true,
-      },
-      options: {
-        stream: true,
+        stream: false,
       },
     });
 
-    return new Response(stream, {
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json(run);
   } catch (error) {
     return new Response(String(error), { status: 500 });
   }

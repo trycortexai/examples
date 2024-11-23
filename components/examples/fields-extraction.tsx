@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Demo, { DemoResult } from "../demo";
 import { toast } from "sonner";
-import { streamResponse } from "@/utils/stream";
 
 const FieldsExtraction = () => {
   const [loading, setLoading] = useState(false);
@@ -30,25 +29,9 @@ const FieldsExtraction = () => {
         body: formData,
       });
 
-      await streamResponse<{
-        key: string;
-        output: { message: string };
-      }>({
-        response,
-        onData: (data) => {
-          if (data.key === "MODEL_EXTRACT" && data.output.message) {
-            setResult((prev) => ({
-              json: (prev?.json || "") + data.output.message,
-            }));
-          }
-        },
-        onError: (error) => {
-          toast.error(error.message);
-          setLoading(false);
-        },
-        onComplete: () => {
-          setLoading(false);
-        },
+      const data = await response.json();
+      setResult({
+        json: data.result,
       });
     } catch {
       toast.error("Failed to extract fields");
