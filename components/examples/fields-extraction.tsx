@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import Demo, { DemoResult } from "../demo";
+import Demo from "../demo";
 import { toast } from "sonner";
 
 const FieldsExtraction = () => {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<DemoResult>(null);
+  const [json, setJson] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [fieldsToExtract, setFieldsToExtract] = useState<string>("");
 
@@ -18,7 +18,7 @@ const FieldsExtraction = () => {
       }
 
       setLoading(true);
-      setResult(null);
+      setJson(null);
 
       const formData = new FormData();
       formData.append("file", file);
@@ -30,9 +30,7 @@ const FieldsExtraction = () => {
       });
 
       const data = await response.json();
-      setResult({
-        json: data.result,
-      });
+      setJson(data.result);
     } catch {
       toast.error("Failed to extract fields");
       setLoading(false);
@@ -40,11 +38,7 @@ const FieldsExtraction = () => {
   };
 
   return (
-    <Demo
-      heading="Fields extraction"
-      loading={loading && !result}
-      result={result}
-    >
+    <Demo heading="Fields extraction" loading={loading && !json} json={json}>
       <Demo.Left>
         <Demo.LeftContent>
           <Demo.FileUpload onUpload={(files) => setFile(files[0])} />

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import Demo, { DemoResult } from "../demo";
+import Demo from "../demo";
 import { toast } from "sonner";
-import { streamResponse } from "@/utils/stream";
+import { readSSE } from "@/utils/sse";
 
 const ImageAnalysis = () => {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<DemoResult>(null);
+  const [markdown, setMarkdown] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
   const [question, setQuestion] = useState<string>("");
 
@@ -19,7 +19,7 @@ const ImageAnalysis = () => {
       }
 
       setLoading(true);
-      setResult(null);
+      setMarkdown("");
 
       const formData = new FormData();
       formData.append("image", image);
@@ -30,34 +30,28 @@ const ImageAnalysis = () => {
         body: formData,
       });
 
-      await streamResponse<{
-        key: string;
-        output: { message: string };
-      }>({
-        response,
-        onData: (data) => {
-          if (data.key === "MODEL_ANALYZE" && data.output.message) {
-            setResult((prev) => ({
-              markdown: (prev?.markdown || "") + data.output.message,
-            }));
-          }
-        },
-        onError: (error) => {
-          toast.error(error.message);
-          setLoading(false);
-        },
-        onComplete: () => {
-          setLoading(false);
-        },
+      await readSSE(response, (event, data: any) => {
+        switch (event) {
+          case "chunk":
+            if (data.key === "MODEL_ANALYZE" && data.output.message) {
+              setMarkdown((prev) => prev + data.output.message);
+            }
+            break;
+        }
       });
     } catch {
       toast.error("Failed to analyze image");
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Demo heading="Image analysis" loading={loading && !result} result={result}>
+    <Demo
+      heading="Image analysis"
+      loading={loading && !markdown}
+      markdown={markdown}
+    >
       <Demo.Left>
         <Demo.LeftContent>
           <Demo.FileUpload

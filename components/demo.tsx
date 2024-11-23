@@ -10,14 +10,10 @@ import Link from "next/link";
 import { Icons } from "./icons";
 import Markdown from "react-markdown";
 
-export type DemoResult = {
-  json?: string | Record<string, unknown>;
-  markdown?: string;
-} | null;
-
 type DemoContextType = {
   loading: boolean;
-  result: DemoResult;
+  json?: string | Record<string, unknown> | null;
+  markdown?: string;
   heading: string;
 };
 
@@ -40,8 +36,8 @@ const useDemoContext = () => {
 };
 
 const DemoLeft = ({ children }: PropsWithChildren) => {
-  const { loading, result, heading } = useDemoContext();
-  const showContent = loading || Boolean(result?.json || result?.markdown);
+  const { loading, json, markdown, heading } = useDemoContext();
+  const showContent = loading || Boolean(json || markdown);
   return (
     <div
       className={cn("flex-grow h-screen transition-all duration-500", {
@@ -63,8 +59,8 @@ const DemoLeft = ({ children }: PropsWithChildren) => {
 };
 
 const DemoRight = ({ children }: PropsWithChildren) => {
-  const { loading, result } = useDemoContext();
-  const showContent = loading || Boolean(result?.json || result?.markdown);
+  const { loading, json, markdown } = useDemoContext();
+  const showContent = loading || Boolean(json || markdown);
   return (
     <div
       className={cn(
@@ -119,34 +115,30 @@ const DemoFileUpload = ({
 };
 
 const DemoResult = () => {
-  const { loading, result } = useDemoContext();
+  const { loading, json, markdown } = useDemoContext();
   return (
     <div className="flex flex-col h-full min-h-[400px] rounded-lg">
-      <div className="flex items-center h-14 justify-between px-4 border-b border-border">
+      <div className="flex items-center h-14 justify-between px-6 border-b border-border">
         <h3 className="text-lg font-medium">Result</h3>
       </div>
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-6">
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full gap-3">
             <Spinner icon="throbber" className="size-5" />
             Processing...
           </div>
-        ) : result ? (
+        ) : json || markdown ? (
           <div className="space-y-4">
-            {result.json && (
+            {json && (
               <JsonViewer
-                json={
-                  typeof result.json === "string"
-                    ? parse(result.json, ALL)
-                    : result.json
-                }
+                json={typeof json === "string" ? parse(json, ALL) : json}
                 maxDepth={Infinity}
                 truncatedByDefault={false}
               />
             )}
-            {result.markdown && (
-              <Markdown className="prose prose-sm max-w-none" skipHtml>
-                {result.markdown}
+            {markdown && (
+              <Markdown className="prose max-w-none" skipHtml>
+                {markdown}
               </Markdown>
             )}
           </div>
