@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
       method: "POST",
       body: {
         input: {
-          schema: fieldsToExtract,
+          fields_to_extract: fieldsToExtract,
           document: fileUrl,
         },
         workflow_version_id: "draft",
