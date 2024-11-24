@@ -1,25 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import Demo, { DemoResult } from "../demo";
+import Demo from "../demo";
 import { toast } from "sonner";
 
 const FieldsExtraction = () => {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<DemoResult>(null);
+  const [json, setJson] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [fieldsToExtract, setFieldsToExtract] = useState<string>("");
 
   const handleExtractFields = async () => {
     try {
-      console.log(file, fieldsToExtract);
       if (!file || !fieldsToExtract) {
         toast.error("No file or fields to extract");
         return;
       }
 
       setLoading(true);
-      setResult(null);
+      setJson(null);
 
       const formData = new FormData();
       formData.append("file", file);
@@ -31,30 +30,21 @@ const FieldsExtraction = () => {
       });
 
       const data = await response.json();
-
-      if (data.error) {
-        toast.error(data.error);
-        return;
-      }
-
-      setResult({
-        json: data,
-      });
+      setJson(data.result);
     } catch {
       toast.error("Failed to extract fields");
-    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Demo heading="Fields extraction" loading={loading} result={result}>
+    <Demo heading="Fields extraction" loading={loading && !json} json={json}>
       <Demo.Left>
         <Demo.LeftContent>
           <Demo.FileUpload onUpload={(files) => setFile(files[0])} />
           <Demo.Textarea
             value={fieldsToExtract}
-            placeholder="Enter fields to extract in natural language"
+            placeholder="Eg: Get employee_id and employee_name"
             onChange={(e) => setFieldsToExtract(e.target.value)}
           />
           <Demo.SubmitButton onClick={handleExtractFields}>
