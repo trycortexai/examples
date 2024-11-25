@@ -290,7 +290,7 @@ const FileDropzone = ({
         <div className="flex flex-wrap gap-2">
           {files.map((file, index) => (
             <Dialog key={index}>
-              <DialogTrigger asChild>
+              <DialogTrigger>
                 <Badge
                   variant="secondary"
                   className="px-2 py-1.5 cursor-pointer rounded-sm font-normal border border-transparent hover:border-border"

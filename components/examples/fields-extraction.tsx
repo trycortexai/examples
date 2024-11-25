@@ -29,12 +29,12 @@ const FieldsExtraction = () => {
         body: formData,
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        toast.error(data.message);
+        toast.error(await response.text());
         return;
       }
+
+      const data = await response.json();
 
       setJson(data.result);
     } finally {

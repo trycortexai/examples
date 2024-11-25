@@ -51,7 +51,7 @@ const DemoLeft = ({ children }: PropsWithChildren) => {
         </Link>
         <h1 className="text-lg font-medium">{heading}</h1>
       </div>
-      <div className="flex justify-center items-center min-h-[calc(100vh-3.5rem)]">
+      <div className="flex sticky top-14 justify-center items-center min-h-[calc(100vh-3.5rem)]">
         {children}
       </div>
     </div>
@@ -125,7 +125,6 @@ const DemoResult = () => {
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full gap-3">
             <Spinner icon="throbber" className="size-5" />
-            Processing...
           </div>
         ) : json || markdown ? (
           <div className="space-y-4">

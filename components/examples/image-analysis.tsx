@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Demo from "../demo";
 import { toast } from "sonner";
+import { readStream } from "@cortex-ai/sdk";
 
 const ImageAnalysis = () => {
   const [loading, setLoading] = useState(false);
@@ -29,14 +30,16 @@ const ImageAnalysis = () => {
         body: formData,
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        toast.error(data.message);
+        toast.error(await response.text());
         return;
       }
 
-      setMarkdown(data.result);
+      await readStream("run", response, (run: any) => {
+        setMarkdown(run.output?.MODEL_ANALYZE?.output?.message as string);
+      });
+    } catch {
+      toast.error("Failed to analyze image");
     } finally {
       setLoading(false);
     }

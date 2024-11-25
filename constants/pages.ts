@@ -11,7 +11,7 @@ export const EXAMPLE_PAGES = [
   "input": {
     "document": {
       "desc": "Document to extract fields from",
-      "name": "Document",
+      "name": "Document", 
       "type": "file",
       "order": 0,
       "extract_images": true,
@@ -116,28 +116,21 @@ export const EXAMPLE_PAGES = [
     }
   ]
 }`,
-      callCode: `const url = 'https://api.withcortex.ai/apps/{app_id}/workflows/{workflow_id}/runs';
+      callCode: `import { Cortex } from "@cortex-ai/sdk";
 
-const options = {
-  method: 'POST',
-  headers: {
-    "Authorization": "Bearer YOUR_API_KEY",
-    "Content-Type": "application/json"
+const cortex = new Cortex({
+  apiKey: process.env.CORTEX_API_KEY!,
+});
+
+const run = await cortex.apps.workflows.runs.create("YOUR_WORKFLOW_ID", {
+  input: {
+    fields_to_extract: "Get the invoice_number, total_amount, and customer_details",
+    document: "https://example.com/invoice.pdf"
   },
-  body: JSON.stringify({
-    "input": {
-      "fields_to_extract": "Get the invoice_number, total_amount, and customer_details",
-      "document": "https://example.com/invoice.pdf"
-    },
-    "workflow_version_id": "draft",
-    "stream": false
-  }),
-};
+  workflow_version_id: "latest",
+});
 
-const response = await fetch(url, options);
-const data = await response.json();
-const extractedFields = data.result;
-console.log(extractedFields); // {invoice_number: '123456', total_amount: '1000', customer_details: 'John Doe'}`,
+console.log(run.result); // {invoice_number: '123456', total_amount: '1000', customer_details: 'John Doe'}`,
     },
   },
   {
@@ -214,28 +207,21 @@ console.log(extractedFields); // {invoice_number: '123456', total_amount: '1000'
     }
   ]
 }`,
-      callCode: `const url = 'https://api.withcortex.ai/apps/{app_id}/workflows/{workflow_id}/runs';
+      callCode: `import { Cortex } from "@cortex-ai/sdk";
 
-const options = {
-  method: 'POST',
-  headers: {
-    "Authorization": "Bearer YOUR_API_KEY",
-    "Content-Type": "application/json"
+const cortex = new Cortex({
+  apiKey: process.env.CORTEX_API_KEY!,
+});
+
+const run = await cortex.apps.workflows.runs.create("YOUR_WORKFLOW_ID", {
+  input: {
+    question: "What is happening in this image?",
+    image: "https://example.com/image.jpg"
   },
-  body: JSON.stringify({
-    "input": {
-      "question": "What is happening in this image?",
-      "image": "https://example.com/image.jpg"
-    },
-    "workflow_version_id": "draft",
-    "stream": false
-  }),
-};
+  workflow_version_id: "latest",
+});
 
-const response = await fetch(url, options);
-const data = await response.json();
-const answer = data.result;
-console.log(answer); // "There is a person in the image."`,
+console.log(run.result); // "There is a person in the image."`,
     },
   },
 ];

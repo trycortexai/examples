@@ -14,16 +14,19 @@ export async function POST(req: NextRequest) {
 
     const imageUrl = await fileToBase64(image as File);
 
-    const run = await cortex.apps.workflows.runs.create(WORKFLOW_ID, {
-      input: {
-        image: imageUrl,
-        question,
-      },
-      workflow_version_id: "draft",
-    });
+    const streamResponse = await cortex.apps.workflows.runs.streamResponse(
+      WORKFLOW_ID,
+      {
+        input: {
+          image: imageUrl,
+          question,
+        },
+        workflow_version_id: "latest",
+      }
+    );
 
-    return NextResponse.json(run);
+    return new NextResponse(streamResponse.body);
   } catch (error) {
-    return new Response(String(error), { status: 500 });
+    return new NextResponse(String(error), { status: 500 });
   }
 }

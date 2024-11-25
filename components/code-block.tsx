@@ -13,6 +13,9 @@ const CodeBlock = ({ children, language, className }: CodeBlockProps) => {
       language={language}
       style={oneDark}
       className={className}
+      customStyle={{
+        fontFamily: "var(--font-mono)",
+      }}
     >
       {children}
     </SyntaxHighlighter>
