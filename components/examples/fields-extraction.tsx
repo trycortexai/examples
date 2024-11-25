@@ -30,9 +30,14 @@ const FieldsExtraction = () => {
       });
 
       const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.message);
+        return;
+      }
+
       setJson(data.result);
-    } catch {
-      toast.error("Failed to extract fields");
+    } finally {
       setLoading(false);
     }
   };

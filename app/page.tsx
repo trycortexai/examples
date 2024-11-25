@@ -1,5 +1,6 @@
 import { Icons } from "@/components/icons";
 import { ExampleCards } from "@/components/example-cards";
+
 export default function Home() {
   return (
     <div className="flex flex-col items-center min-h-screen p-4 sm:p-8 md:p-12 lg:p-20 max-w-screen-lg mx-auto">

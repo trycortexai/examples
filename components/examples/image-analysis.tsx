@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Demo from "../demo";
 import { toast } from "sonner";
-import { readSSE } from "@/utils/sse";
 
 const ImageAnalysis = () => {
   const [loading, setLoading] = useState(false);
@@ -30,17 +29,14 @@ const ImageAnalysis = () => {
         body: formData,
       });
 
-      await readSSE(response, (event, data: any) => {
-        switch (event) {
-          case "chunk":
-            if (data.key === "MODEL_ANALYZE" && data.output.message) {
-              setMarkdown((prev) => prev + data.output.message);
-            }
-            break;
-        }
-      });
-    } catch {
-      toast.error("Failed to analyze image");
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.message);
+        return;
+      }
+
+      setMarkdown(data.result);
     } finally {
       setLoading(false);
     }
