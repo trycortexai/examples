@@ -3,7 +3,7 @@
 ## ⚙️ Project setup
 
 ```
-git clone git@github.com:trycortexai/examplesp.git
+git clone git@github.com:trycortexai/examples.git
 cd examples
 
 # complete .env.local after copying
