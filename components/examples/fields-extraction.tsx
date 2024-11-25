@@ -43,7 +43,7 @@ const FieldsExtraction = () => {
   };
 
   return (
-    <Demo heading="Fields extraction" loading={loading && !json} json={json}>
+    <Demo loading={loading && !json} json={json}>
       <Demo.Left>
         <Demo.LeftContent>
           <Demo.FileUpload onUpload={(files) => setFile(files[0])} />

@@ -46,11 +46,7 @@ const ImageAnalysis = () => {
   };
 
   return (
-    <Demo
-      heading="Image analysis"
-      loading={loading && !markdown}
-      markdown={markdown}
-    >
+    <Demo loading={loading && !markdown} markdown={markdown}>
       <Demo.Left>
         <Demo.LeftContent>
           <Demo.FileUpload

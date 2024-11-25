@@ -9,12 +9,14 @@ import { parse, ALL } from "partial-json";
 import Link from "next/link";
 import { Icons } from "./icons";
 import Markdown from "react-markdown";
+import { EXAMPLE_PAGES } from "@/constants/pages";
+import { usePathname } from "next/navigation";
+import ShowCodeDialog from "./code-example-modal";
 
 type DemoContextType = {
   loading: boolean;
   json?: string | Record<string, unknown> | null;
   markdown?: string;
-  heading: string;
 };
 
 const DemoContext = createContext<DemoContextType | undefined>(undefined);
@@ -36,8 +38,12 @@ const useDemoContext = () => {
 };
 
 const DemoLeft = ({ children }: PropsWithChildren) => {
-  const { loading, json, markdown, heading } = useDemoContext();
+  const { loading, json, markdown } = useDemoContext();
   const showContent = loading || Boolean(json || markdown);
+
+  const pathname = usePathname();
+  const { title, code } = EXAMPLE_PAGES.find((page) => page.href === pathname)!;
+
   return (
     <div
       className={cn("flex-grow min-h-screen transition-all duration-500", {
@@ -49,7 +55,15 @@ const DemoLeft = ({ children }: PropsWithChildren) => {
         <Link href="/">
           <Icons.arrowLeft className="size-5 text-muted-foreground hover:text-foreground transition-colors" />
         </Link>
-        <h1 className="text-lg font-medium">{heading}</h1>
+        <h1 className="text-lg font-medium">{title}</h1>
+        <div className="ml-auto">
+          <ShowCodeDialog title={title} code={code}>
+            <Button variant="outline" size="sm" className="gap-2">
+              <Icons.code className="size-4" />
+              Show Code
+            </Button>
+          </ShowCodeDialog>
+        </div>
       </div>
       <div className="flex sticky top-14 justify-center items-center min-h-[calc(100vh-3.5rem)]">
         {children}
